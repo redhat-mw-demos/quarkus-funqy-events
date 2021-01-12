@@ -69,12 +69,22 @@ kubectl apply -n knativetutorial -f src/main/k8s/lastChainLink-trigger.yaml
 
 ```
 
-running against the broker directly
-
-Get the broker: 
+running the curler to throw some POST requests to the broker.
 
 ```
-curl -v "http://broker:8080" \
+kubectl apply -n knativetutorial -f src/main/k8s/curler.yaml
+kubectl -n knativetutorial exec -it curler -- /bin/bash
+```
+
+running stern to watch your pods. 
+```
+stern funq -c user-container
+```
+
+running against the broker directly
+
+```
+curl -v "http://broker-ingress.knative-eventing.svc.cluster.local/knativetutorial/default" \
 -X POST \
 -H "Ce-Id: 1234" \
 -H "Ce-Specversion: 1.0" \
