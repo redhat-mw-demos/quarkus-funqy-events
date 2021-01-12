@@ -1,6 +1,7 @@
 # quarkus-funqy-events project
 
-This project uses Quarkus, the Supersonic Subatomic Java Framework.
+This project uses Quarkus and the Funqy extension to showcase a simple function chain. 
+You will need stern, kubectl, kn, oc binaries installed on your local machine. 
 
 If you want to learn more about Quarkus, please visit its website: https://quarkus.io/ .
 
@@ -43,20 +44,44 @@ You can then execute your native executable with: `./target/quarkus-funqy-events
 
 If you want to learn more about building native executables, please consult https://quarkus.io/guides/maven-tooling.html.
 
-# RESTEasy JAX-RS
 
-<p>A Hello World RESTEasy resource</p>
+## Things you need to do before running the events on Openshift/kubernetes
 
-Guide: https://quarkus.io/guides/rest-json
+Creating the default broker
+```
+kn broker create default --namespace knativetutorial
 
+kn broker -n knative tutorial list
+```
 
+Dont forget to change the container image settings in application.properties and the src/main/k8s/funqy-service.yaml
 
-{
-  "address": "",
-  "person": "",
-  "secNumber": "",
-  "verifiedDebts": "",
-  "verifiedPartners": "",
-  "verifiedPerson": "",
-  "verifiedTaxes": ""
-}
+Deploying the eventing app.
+```
+kubectl apply -n knativetutorial -f src/main/k8s/funqy-service.yaml
+
+# And the function chain
+
+kubectl apply -n knativetutorial -f src/main/k8s/defaultChain-trigger.yaml
+kubectl apply -n knativetutorial -f src/main/k8s/configChain-trigger.yaml
+kubectl apply -n knativetutorial -f src/main/k8s/annoatedChain-trigger.yaml
+kubectl apply -n knativetutorial -f src/main/k8s/lastChainLink-trigger.yaml
+
+```
+
+running against the broker directly
+
+Get the broker: 
+
+```
+curl -v "http://broker:8080" \
+-X POST \
+-H "Ce-Id: 1234" \
+-H "Ce-Specversion: 1.0" \
+-H "Ce-Type: defaultChain" \
+-H "Ce-Source: curl" \
+-H "Content-Type: application/json" \
+-d '{"person":"Shaaf","address":"Denmark","secNumber":"00100","verifiedPerson":false,"verifiedDebts":false,"verifiedTaxes":false,"verifiedPartners":false}
+@sshaaf
+'
+```
