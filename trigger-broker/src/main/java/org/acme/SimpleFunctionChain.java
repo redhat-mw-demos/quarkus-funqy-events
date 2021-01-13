@@ -5,10 +5,16 @@ import io.quarkus.funqy.Context;
 import io.quarkus.funqy.Funq;
 import io.quarkus.funqy.knative.events.CloudEvent;
 import io.quarkus.funqy.knative.events.CloudEventMapping;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
+
+import javax.inject.Inject;
 
 
 public class SimpleFunctionChain {
 
+    @Inject
+    @RestClient
+    InputService inputService;
     
     /**
      * Expects knative event of type "defaultChain".  Creates event of type "defaultChain.output".
@@ -22,6 +28,7 @@ public class SimpleFunctionChain {
     public Input defaultChain(Input input) {
         System.out.println("*** defaultChain - Validate Person ***");
         input.setVerifiedPerson(true);
+        inputService.postInput(input);
         System.out.println(input);
         return input;
     }
@@ -46,6 +53,7 @@ public class SimpleFunctionChain {
     public Input configChain(Input input) {
         System.out.println("*** configChain Verify Debts ***");
         input.setVerifiedDebts(true);
+        inputService.postInput(input);
         System.out.println(input);
         return input;
     }
@@ -63,6 +71,7 @@ public class SimpleFunctionChain {
     public Input annotatedChain(Input input) {
         System.out.println("*** annotatedChain Verify Address and info ***");
         input.setVerifiedPartners(true);
+        inputService.postInput(input);
         System.out.println(input);
         return input;
     }
@@ -76,6 +85,7 @@ public class SimpleFunctionChain {
     public void lastChainLink(Input input, @Context CloudEvent event) {
         System.out.println("*** lastChainLink Verify Tax ***");
         input.setVerifiedTaxes(true);
+        inputService.postInput(input);
         System.out.println(input + "::" + "lastChainLink");
     }
 

@@ -51,7 +51,7 @@ Creating the default broker
 ```
 kn broker create default --namespace knativetutorial
 
-kn broker -n knative tutorial list
+kn broker -n knativetutorial list
 ```
 
 Dont forget to change the container image settings in application.properties and the src/main/k8s/funqy-service.yaml

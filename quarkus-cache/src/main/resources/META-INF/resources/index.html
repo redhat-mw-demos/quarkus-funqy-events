@@ -1,0 +1,143 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>Game REST service</title>
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/wingcss/0.1.8/wing.min.css"/> -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <!-- Load AngularJS -->
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+    <script type="text/javascript">
+        var app = angular.module("GameManagement", []);
+
+        //Controller Part
+        app.controller("GameManagementController", function ($scope, $http) {
+
+            //Initialize page with default data which is blank in this example
+            $scope.games = [];
+
+            $scope.form = {
+                person: "",
+                address: "",
+                secNumber: "",
+            };
+
+            //Now load the data from server
+            _refreshPageData();
+
+            //HTTP POST methods for add games
+            $scope.add = function () {
+
+                var data = {"person": $scope.form.person, "address": $scope.form.address, "secNumber": $scope.form.secNumber };
+
+                $http({
+                    method: "POST",
+                    url: '/api',
+                    data: angular.toJson(data),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }).then(_success, _error);
+            };
+
+            /* Private Methods */
+            //HTTP GET- get all games collection
+            function _refreshPageData() {
+                $http({
+                    method: 'GET',
+                    url: '/api'
+                }).then(function successCallback(response) {
+                    $scope.games = response.data;
+                }, function errorCallback(response) {
+                    console.log(response.statusText);
+                });
+            }
+
+            function _success(response) {
+                _refreshPageData();
+                _clearForm();
+            }
+
+            function _error(response) {
+                alert(response.data.message || response.statusText);
+            }
+
+            //Clear the form
+            function _clearForm() {
+                $scope.form.person = "";
+                $scope.form.address = "";
+                $scope.form.secNumber = "";
+            }
+        });
+    </script>
+</head>
+<body ng-app="GameManagement" ng-controller="GameManagementController">
+
+<div class="container">
+    <nav class="navbar bg-light; border-bottom">
+        <h3> Credit Checks in Action right now </h3>
+        <a class="navbar-brand" href="https://www.redhat.com/en/technologies/jboss-middleware/data-grid">
+            <img src="images/rhdg.png" width="30" height="30" alt="">
+        </a>
+    </nav>
+
+    <div class="row row-cols-1 row-cols-md-4">
+        <div class="col mb-4" ng-repeat="game in games">
+            <div class="card" style="border-style: hidden">
+                <div class="card text-center">
+                    <h6 class="card-header alert-dark">{{ game.secNumber }}</h6>
+                </div>
+                <div class="card-body text-center">
+                    <h1 class="card-title">{{ game.person }}</h1>
+                </div>
+                <div class="card-footer text-muted text-center">
+                    {{ game.address }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="card">
+        <form ng-submit="add()">
+            <div class="card-header">
+                Enter your Data
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <div class="input-group flex-nowrap">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="person">Person</span>
+                        </div>
+                        <input type="text" class="form-control" placeholder="Person" aria-label="person" aria-describedby="addon-wrapping" ng-model="form.person">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group flex-nowrap">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="country">Address</span>
+                        </div>
+                        <input type="text" class="form-control" placeholder="e.g. USA" aria-label="address" aria-describedby="addon-wrapping" ng-model="form.address">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group flex-nowrap">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="course">Security Code</span>
+                        </div>
+                        <input type="text" class="form-control" placeholder="Course e.g. security code" aria-label="secNumber" aria-describedby="addon-wrapping" ng-model="form.secNumber">
+                    </div>
+                </div>
+
+            </div>
+            <div class="card-footer text-muted text-right">
+                <button type="submit" value="Save" class="btn btn-primary">Submit</button>
+                <button type="reset" class="btn btn-warning" value="$('form').get(0).reset()">Reset</button>
+            </div>
+        </form>
+    </div>
+
+</div>
+
+</body>
+</html>
