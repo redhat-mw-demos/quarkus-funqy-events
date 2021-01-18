@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/loadgenerator/loadgenerator.iml" filepath="$PROJECT_DIR$/loadgenerator/loadgenerator.iml" />
+      <module fileurl="file://$PROJECT_DIR$/quarkus-cache/quarkus-cache.iml" filepath="$PROJECT_DIR$/quarkus-cache/quarkus-cache.iml" />
+      <module fileurl="file://$PROJECT_DIR$/quarkus-funqy-events.iml" filepath="$PROJECT_DIR$/quarkus-funqy-events.iml" />
+      <module fileurl="file://$PROJECT_DIR$/trigger-broker/trigger-broker.iml" filepath="$PROJECT_DIR$/trigger-broker/trigger-broker.iml" />
+    </modules>
+  </component>
+</project>

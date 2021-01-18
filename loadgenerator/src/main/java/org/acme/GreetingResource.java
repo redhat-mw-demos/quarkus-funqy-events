@@ -29,17 +29,22 @@ public class GreetingResource {
     @Path("/gen/{id}")
     @Produces(MediaType.TEXT_PLAIN)
     public Response generate(@PathParam("id") Long id){
-        GenerateFullNames names = new GenerateFullNames("FNames.txt", "LNames.txt");
+
+    try {
+        GenerateFullNames names = new GenerateFullNames("/FNames.txt", "/LNames.txt");
         GeneratePhoneNumbers number = new GeneratePhoneNumbers();
-        GenerateCountries countries = new GenerateCountries("Countries");
+        GenerateCountries countries = new GenerateCountries("/Countries.txt");
 
-        for(int i = 0; i < id; i++){
+        for (int i = 0; i < id; i++) {
 
-            Input input =  new Input(names.getNextFullName(), countries.getCountry(), number.getNextPhoneNumber());
+            Input input = new Input(names.getNextFullName(), countries.getCountry(), number.getNextPhoneNumber());
             System.out.println(input);
-         //   inputService.postInput(input);
+            //   inputService.postInput(input);
         }
-
+    }
+    catch(Exception e){
+        e.printStackTrace();
+    }
         return Response.status(Response.Status.CREATED).entity(id).build();
     }
 

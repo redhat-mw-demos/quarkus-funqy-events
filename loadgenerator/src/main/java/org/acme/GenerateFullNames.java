@@ -1,11 +1,11 @@
 package org.acme;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
+import java.io.*;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 
 public class GenerateFullNames {
@@ -15,26 +15,11 @@ public class GenerateFullNames {
     private static Map<Integer, String> lNames = null;
 
 
-    public GenerateFullNames(String fNameFile, String lNameFile) {
-        fNames = Collections.unmodifiableMap(getMapFromFile(fNameFile));
-        lNames = Collections.unmodifiableMap(getMapFromFile(lNameFile));
+    public GenerateFullNames(String fNameFile, String lNameFile) throws IOException{
+        fNames = Collections.unmodifiableMap(new Reader().getMapFromFile(fNameFile));
+        lNames = Collections.unmodifiableMap(new Reader().getMapFromFile(lNameFile));
     }
 
-    public Map<Integer, String> getMapFromFile(String fileName) {
-        Map<Integer, String> temp = new HashMap<>();
-        int count = 0;
-        try {
-            try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
-                for (String line; (line = br.readLine()) != null; ) {
-                    temp.put(count, line);
-                    count++;
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return temp;
-    }
 
     public String getNextLastName() {
         return lNames.get(1);
